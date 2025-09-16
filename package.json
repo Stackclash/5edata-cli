@@ -1,0 +1,29 @@
+{
+  "name": "5etools-markdown",
+  "version": "0.0.0",
+  "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stackclash/5etools-markdown.git"
+  },
+  "keywords": [
+    "ttrpg",
+    "5etools",
+    "markdown"
+  ],
+  "author": "Richard Cox",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Stackclash/5etools-markdown/issues"
+  },
+  "homepage": "https://github.com/Stackclash/5etools-markdown#readme",
+  "dependencies": {
+    "commander": "^14.0.1",
+    "handlebars": "^4.7.8"
+  }
+}
