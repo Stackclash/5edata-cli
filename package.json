@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
-    "test": "test"
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "yarn lint --fix"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,16 @@
   "dependencies": {
     "commander": "^14.0.1",
     "handlebars": "^4.7.8"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.35.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
+    "@types/node": "^24.5.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.0"
   }
 }
