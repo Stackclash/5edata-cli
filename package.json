@@ -74,6 +74,9 @@
   },
   "lint-staged": {
     "**/*.ts": [
+      "npm run lint",
+      "npm test --bail --findRelatedTests --passWithNoTests",
+      "npm run test:e2e --bail --findRelatedTests --passWithNoTests"
     ]
   }
 }
