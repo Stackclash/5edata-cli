@@ -10,9 +10,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "declaration": true,        // Useful for npm publishing
-    "sourceMap": true,          // Helpful during development
-    "incremental": true         // Faster rebuilds during development
+    "declaration": true,
+    "sourceMap": true,
+    "incremental": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

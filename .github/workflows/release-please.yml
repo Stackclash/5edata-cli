@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   release-please:
+    name: Release Please
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
@@ -25,6 +26,7 @@ jobs:
           manifest-file: .release-please-manifest.json
 
   release:
+    name: Build and Upload Release Assets
     runs-on: ubuntu-latest
     if: ${{ needs.release-please.outputs.release_created }}
     needs: release-please
@@ -49,45 +51,81 @@ jobs:
         
       # Step 4: Build the single file
       # This is where we create the bundled, standalone executable
-      # TODO: Update file names
       - name: Build cross-platform distributions
         run: |
+          # Create dist directory if it doesn't exist
+          mkdir -p dist
+          
           # Create the base bundled JavaScript file
           npx esbuild src/index.ts \
             --bundle \
             --platform=node \
-            --target=node16 \
-            --outfile=dist/dnd-converter.js \
+            --target=node20 \
+            --outfile=dist/5edata-cli.js \
             --external:fsevents \
-            --minify
+            --minify \
+            --format=esm \
+            --banner:js="#!/usr/bin/env node"
           
-          # Create Unix/Linux/macOS version with shebang
-          echo '#!/usr/bin/env node' > dist/dnd-converter-unix
-          cat dist/dnd-converter.js >> dist/dnd-converter-unix
-          chmod +x dist/dnd-converter-unix
+          # Create Unix/Linux/macOS executable
+          cp dist/5edata-cli.js dist/5edata-cli-unix
+          chmod +x dist/5edata-cli-unix
           
           # Create Windows batch file wrapper
-          cat > dist/dnd-converter.bat << 'EOF'
+          cat > dist/5edata-cli.bat << 'EOF'
           @echo off
-          node "%~dp0dnd-converter.js" %*
+          node "%~dp05edata-cli.js" %*
           EOF
           
           # Create PowerShell wrapper for modern Windows environments
-          cat > dist/dnd-converter.ps1 << 'EOF'
+          cat > dist/5edata-cli.ps1 << 'EOF'
           $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-          $jsFile = Join-Path $scriptDir "dnd-converter.js"
+          $jsFile = Join-Path $scriptDir "5edata-cli.js"
           & node $jsFile $args
           EOF
           
-      # Step 5: Attach the built file to the GitHub release
-      # This uploads your built file so users can download it
-      # TODO: Ensure all cross platform files are uploaded
-      - name: Upload release asset
+          # Verify builds were created
+          ls -la dist/
+          echo "✅ All distribution files created successfully"
+          
+      # Step 5: Upload release assets
+      # This uploads all built files so users can download them for their platform
+      - name: Upload JavaScript bundle
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/dnd-converter-${{ github.ref_name }}.js
-          asset_name: dnd-converter-${{ github.ref_name }}.js
+          asset_path: ./dist/5edata-cli.js
+          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}.js
           asset_content_type: application/javascript
+          
+      - name: Upload Unix/Linux/macOS executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./dist/5edata-cli-unix
+          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}-unix
+          asset_content_type: application/octet-stream
+          
+      - name: Upload Windows batch file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./dist/5edata-cli.bat
+          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}.bat
+          asset_content_type: application/octet-stream
+          
+      - name: Upload PowerShell script
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./dist/5edata-cli.ps1
+          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}.ps1
+          asset_content_type: application/octet-stream
