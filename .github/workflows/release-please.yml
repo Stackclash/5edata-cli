@@ -31,6 +31,10 @@ jobs:
     if: ${{ needs.release-please.outputs.pr }}
     needs: release-please
     steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - run: npm ci
       - name: Get branch
         id: branch
         run: |

@@ -3,7 +3,7 @@ site_url: https://stackclash.github.io/5e-data-cli
 repo_url: https://github.com/Stackclash/5e-data-cli
 edit_uri: blob/main/docs/
 remote_branch: gh-pages
-docs_dir: .
+docs_dir: docs
 theme:
   name: material
   features:
