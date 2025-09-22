@@ -16,7 +16,8 @@ jobs:
     name: Check PR Title
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR title follows Conventional Commits
-        uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: PR Conventional Commit Validation
+        uses:  ytanikin/PRConventionalCommits@1.3.0
+        with:
+          task_types: '["feat","fix","docs","test","ci","refactor","chore"]'
+          custom_labels: '{"feat": "feature", "fix": "fix", "docs": "documentation", "test": "test", "ci": "CI/CD", "refactor": "refactor", "wip": "WIP"}'
