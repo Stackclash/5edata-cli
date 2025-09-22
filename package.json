@@ -45,10 +45,12 @@
   "dependencies": {
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
+    "@oclif/plugin-version": "^2.2.33",
     "handlebars": "^4.7.8"
   },
   "devDependencies": {
     "@eslint/compat": "^1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
     "@types/chai": "^4",
@@ -58,19 +60,20 @@
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
+    "husky": "^9.1.7",
     "mocha": "^10",
     "oclif": "^4",
     "shx": "^0.3.3",
     "ts-node": "^10",
-    "typescript": "^5",
-    "@ianvs/prettier-plugin-sort-imports": "^4.7.0"
+    "typescript": "^5"
   },
   "oclif": {
     "bin": "5edata-cli",
     "dirname": "5edata-cli",
     "commands": "./dist/commands",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-version"
     ],
     "topicSeparator": " ",
     "topics": {
