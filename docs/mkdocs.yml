@@ -1,16 +1,11 @@
-site_name: TTRPG Audio Manager
-site_url: https://stackclash.github.io/obsidian-ttrpg-audio-manager
-repo_url: https://github.com/Stackclash/obsidian-ttrpg-audio-manager
+site_name: 5e Data CLI
+site_url: https://stackclash.github.io/5e-data-cli
+repo_url: https://github.com/Stackclash/5e-data-cli
 edit_uri: blob/main/docs/
 remote_branch: gh-pages
-docs_dir: ./pages
+docs_dir: .
 nav:
   - Introduction: index.md
-  - Installation: installation.md
-  - Settings: settings.md
-  - Usage: usage.md
-  - Contributing: contributing.md
-  - Changelog: changelog.md
 theme:
   name: material
   features:

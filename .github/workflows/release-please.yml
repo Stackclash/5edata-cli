@@ -17,6 +17,7 @@ jobs:
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
+      pr: ${{ steps.release.outputs.pr }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
@@ -24,6 +25,29 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  release-pr-readme-file:
+    runs-on: ubuntu-latest
+    if: ${{ needs.release-please.outputs.pr }}
+    needs: release-please
+    steps:
+      - name: Get branch
+        id: branch
+        run: |
+          branch=$(echo '${{ needs.release-please.outputs.pr }}' | jq -r '.headBranchName')
+          echo "branch_name=$branch" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ steps.branch.outputs.branch_name }}
+          fetch-depth: 0
+      - name: Update README
+        run: |
+          npm run readme
+      - name: Commit and push changes
+        uses: devops-infra/action-commit-push@v0.11.4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: Updating README.md
 
   release:
     name: Build and Upload Release Assets
@@ -44,7 +68,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: latest
-      - run: npm install
+      - run: npm ci
       - run: npm run build
       - run: npm run prepack
       - uses: JS-DevTools/npm-publish@19c28f1ef146469e409470805ea4279d47c3d35c
