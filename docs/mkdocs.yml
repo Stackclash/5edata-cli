@@ -4,8 +4,6 @@ repo_url: https://github.com/Stackclash/5e-data-cli
 edit_uri: blob/main/docs/
 remote_branch: gh-pages
 docs_dir: .
-nav:
-  - Introduction: index.md
 theme:
   name: material
   features:
