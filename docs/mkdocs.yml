@@ -1,0 +1,14 @@
+site_name: 5e Data CLI
+site_url: https://stackclash.github.io/5e-data-cli
+repo_url: https://github.com/Stackclash/5e-data-cli
+edit_uri: blob/main/docs/
+remote_branch: gh-pages
+docs_dir: .
+theme:
+  name: material
+  features:
+    - toc.integrate
+plugins:
+  - include-markdown
+markdown_extensions:
+  - github-callouts
