@@ -14,5 +14,4 @@ A CLI tool to convert 5etools JSON and D&D Beyond character data to markdown fil
 # Usage
 <!-- usage -->
 
-# Commands
 <!-- commands -->

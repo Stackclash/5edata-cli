@@ -40,7 +40,7 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "readme": "oclif readme --multi"
+    "readme": "oclif readme --multi --output-dir=docs/commands"
   },
   "dependencies": {
     "@oclif/core": "^4",
