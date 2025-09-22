@@ -31,101 +31,23 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     needs: release-please
     steps:
-      # Step 1: Get the code
-      # This checks out your repository at the specific tag/commit of the release
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      # Step 2: Set up Node.js environment
-      # This installs Node.js and npm, similar to setting up a development machine
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - run: |
+          echo "Tag name: ${{ needs.release-please.outputs.tag_name }}"
+
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    if: ${{ needs.release-please.outputs.release_created }}
+    needs: release-please
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'  # This caches node_modules for faster builds
-          
-      # Step 3: Install dependencies
-      # This runs npm install to get all your project dependencies
-      - name: Install dependencies
-        run: npm ci  # npm ci is like npm install but faster and more reliable for CI
-        
-      # Step 4: Build the single file
-      # This is where we create the bundled, standalone executable
-      - name: Build cross-platform distributions
-        run: |
-          # Create dist directory if it doesn't exist
-          mkdir -p dist
-          
-          # Create the base bundled JavaScript file
-          npx esbuild src/index.ts \
-            --bundle \
-            --platform=node \
-            --target=node20 \
-            --outfile=dist/5edata-cli.js \
-            --external:fsevents \
-            --minify \
-            --format=esm \
-            --banner:js="#!/usr/bin/env node"
-          
-          # Create Unix/Linux/macOS executable
-          cp dist/5edata-cli.js dist/5edata-cli-unix
-          chmod +x dist/5edata-cli-unix
-          
-          # Create Windows batch file wrapper
-          cat > dist/5edata-cli.bat << 'EOF'
-          @echo off
-          node "%~dp05edata-cli.js" %*
-          EOF
-          
-          # Create PowerShell wrapper for modern Windows environments
-          cat > dist/5edata-cli.ps1 << 'EOF'
-          $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-          $jsFile = Join-Path $scriptDir "5edata-cli.js"
-          & node $jsFile $args
-          EOF
-          
-          # Verify builds were created
-          ls -la dist/
-          echo "✅ All distribution files created successfully"
-          
-      # Step 5: Upload release assets
-      # This uploads all built files so users can download them for their platform
-      - name: Upload JavaScript bundle
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          node-version: latest
+      - run: npm install
+      - run: npm run build
+      - run: npm run prepack
+      - uses: JS-DevTools/npm-publish@19c28f1ef146469e409470805ea4279d47c3d35c
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/5edata-cli.js
-          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}.js
-          asset_content_type: application/javascript
-          
-      - name: Upload Unix/Linux/macOS executable
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/5edata-cli-unix
-          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}-unix
-          asset_content_type: application/octet-stream
-          
-      - name: Upload Windows batch file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/5edata-cli.bat
-          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}.bat
-          asset_content_type: application/octet-stream
-          
-      - name: Upload PowerShell script
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/5edata-cli.ps1
-          asset_name: 5edata-cli-${{ needs.release-please.outputs.tag_name }}.ps1
-          asset_content_type: application/octet-stream
+          token: ${{ secrets.NPM_TOKEN }}
+      - run: npm run postpack

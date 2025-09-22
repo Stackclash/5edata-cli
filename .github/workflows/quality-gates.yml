@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: latest
           cache: 'npm'
       
       - name: Install dependencies
@@ -26,44 +26,18 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Run Unit Tests
-        run: npm test
-
-  cross-platform-tests:
-    name: Cross-Platform Tests
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [16, 18, 20]    
+        os: ['ubuntu-latest', 'windows-latest']
+        node_version: [lts/-1, lts/*, latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Build standalone CLI
-        run: npm run build:standalone
-        
-      - name: Test CLI functionality
-        shell: bash
-        run: npm run test:e2e
+          node-version: ${{ matrix.node_version }}
+          cache: npm
+      - run: npm install
+      - run: npm run build
+      - run: npm run test
