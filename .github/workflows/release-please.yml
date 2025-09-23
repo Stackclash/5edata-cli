@@ -46,7 +46,7 @@ jobs:
       - run: npm ci
       - name: Update README
         run: |
-          npm run readme
+          npm run docs
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
@@ -60,8 +60,28 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     needs: release-please
     steps:
-      - run: |
-          echo "Tag name: ${{ needs.release-please.outputs.tag_name }}"
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - run: npm ci
+      - run: npm run build
+      
+      # Generate cross-platform tarballs using oclif
+      - name: Generate oclif tarballs
+        run: npx oclif pack tarballs
+        
+      # Upload all generated tarballs to the release
+      - name: Upload tarballs to release
+        run: |
+          # Find all generated tarball files
+          for tarball in $(find dist -name "*.tar.gz" -o -name "*.tar.xz"); do
+            filename=$(basename "$tarball")
+            echo "Uploading $filename..."
+            gh release upload ${{ needs.release-please.outputs.tag_name }} "$tarball" --clobber
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     name: Publish to npm
@@ -69,7 +89,7 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     needs: release-please
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: latest
