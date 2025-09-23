@@ -151,7 +151,7 @@ jobs:
 
       - run: npm run prepack
 
-      - run: npm publish --provenance --ignore-scripts
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
