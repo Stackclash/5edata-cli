@@ -48,10 +48,11 @@ jobs:
         run: |
           npm run readme
       - name: Commit and push changes
-        uses: devops-infra/action-commit-push@v0.11.4
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           commit_message: Updating Documentation
+          commit_options: '--no-verify'
 
   release:
     name: Build and Upload Release Assets
