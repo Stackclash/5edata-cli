@@ -17,6 +17,7 @@ jobs:
     name: Check PR Title
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Check PR title follows Conventional Commits
         id: pr
         uses: amannn/action-semantic-pull-request@v6
