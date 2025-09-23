@@ -106,25 +106,25 @@ jobs:
       - name: Zip Windows artifacts
         if: matrix.os == 'ubuntu-latest'
         run: |
-          zip ${{ steps.cli-name.outputs.cli_name }}-v1.0.0-windows-arm64.zip dist/win32/*arm64.exe
-          zip ${{ steps.cli-name.outputs.cli_name }}-v1.0.0-windows-x64.zip dist/win32/*x64.exe
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-windows-arm64.zip dist/win32/*arm64.exe
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-windows-x64.zip dist/win32/*x64.exe
 
       - name: Zip Debian artifacts
         if: matrix.os == 'ubuntu-latest'
         run: |
-          zip ${{ steps.cli-name.outputs.cli_name }}-v1.0.0-linux-arm64.zip dist/deb/*arm64.deb
-          zip ${{ steps.cli-name.outputs.cli_name }}-v1.0.0-linux-x64.zip dist/deb/*amd64.deb
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-linux-arm64.zip dist/deb/*arm64.deb
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-linux-x64.zip dist/deb/*amd64.deb
 
       - name: Zip macOS artifacts
         if: matrix.os == 'macos-latest'
         run: |
-          zip ${{ steps.cli-name.outputs.cli_name }}-v1.0.0-macos-arm64.zip dist/macos/*arm64.pkg
-          zip ${{ steps.cli-name.outputs.cli_name }}-v1.0.0-macos-x64.zip dist/macos/*x64.pkg
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-macos-arm64.zip dist/macos/*arm64.pkg
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-macos-x64.zip dist/macos/*x64.pkg
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
           files: |
             *.zip
         env:
