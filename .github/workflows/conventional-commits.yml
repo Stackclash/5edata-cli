@@ -17,13 +17,42 @@ jobs:
     name: Check PR Title
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: Check PR title follows Conventional Commits
-        id: pr
         uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Label PR
-        run: gh pr edit ${{ github.event.pull_request.number }} --add-label ${{ steps.pr.outputs.type }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Extract PR title
+        id: pr
+        run: echo "title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+
+      - name: Determine label
+        id: label
+        run: |
+          title="${{ steps.pr.outputs.title }}"
+          label=""
+
+          if [[ "$title" =~ ^feat ]]; then
+            label="feature"
+          elif [[ "$title" =~ ^fix ]]; then
+            label="bug"
+          elif [[ "$title" =~ ^docs ]]; then
+            label="documentation"
+          elif [[ "$title" =~ ^chore ]]; then
+            label="chore"
+          elif [[ "$title" =~ ^test ]]; then
+            label="test"
+          elif [[ "$title" =~ ^refactor ]]; then
+            label="refactor"
+          elif [[ "$title" =~ ^perf ]]; then
+            label="performance"
+          fi
+
+          echo "label=$label" >> $GITHUB_OUTPUT
+
+      - name: Add label to PR
+        if: steps.label.outputs.label != ''
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ steps.label.outputs.label }} 
