@@ -1,17 +1,6 @@
 {
-  "name": "5edata-cli",
-  "type": "module",
+  "name": "@stackclash/5edata-cli",
   "version": "0.0.0",
-  "author": "Richard Cox",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Stackclash/5edata-cli.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Stackclash/5edata-cli/issues"
-  },
-  "homepage": "https://github.com/Stackclash/5edata-cli#readme",
   "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
   "keywords": [
     "ttrpg",
@@ -19,19 +8,34 @@
     "markdown",
     "oclif"
   ],
+  "homepage": "https://github.com/Stackclash/5edata-cli#readme",
+  "bugs": {
+    "url": "https://github.com/Stackclash/5edata-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stackclash/5edata-cli.git"
+  },
+  "license": "MIT",
+  "author": "Richard Cox",
+  "type": "module",
   "main": "dist/index.js",
-  "engines": {
-    "node": ">=18.0.0"
+  "types": "dist/index.d.ts",
+  "bin": {
+    "5edata-cli": "bin/run.js"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
   },
   "files": [
     "./bin",
     "./dist",
     "./oclif.manifest.json"
   ],
-  "bin": {
-    "5edata-cli": "./bin/run.js"
+  "engines": {
+    "node": ">=18.0.0"
   },
-  "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "husky",
     "build": "shx rm -rf dist && tsc -b",
