@@ -1,6 +1,17 @@
 {
   "name": "@stackclash/5edata-cli",
   "version": "0.0.0",
+  "type": "module",
+  "author": "Richard Cox <cox.richard200@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stackclash/5edata-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Stackclash/5edata-cli/issues"
+  },
+  "homepage": "https://github.com/Stackclash/5edata-cli#readme",
   "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
   "keywords": [
     "ttrpg",
@@ -8,17 +19,6 @@
     "markdown",
     "oclif"
   ],
-  "homepage": "https://github.com/Stackclash/5edata-cli#readme",
-  "bugs": {
-    "url": "https://github.com/Stackclash/5edata-cli/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Stackclash/5edata-cli.git"
-  },
-  "license": "MIT",
-  "author": "Richard Cox",
-  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
