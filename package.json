@@ -42,7 +42,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "postpack": "shx rm -f oclif.manifest.json",
-    "prepack": "oclif manifest",
+    "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "docs": "oclif readme --multi --output-dir=docs/commands"
   },
