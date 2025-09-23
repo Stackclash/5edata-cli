@@ -80,6 +80,9 @@
       "hello": {
         "description": "Say hello to the world and others"
       }
+    },
+    "macos": {
+      "identifier": "com.stackclash.5edata-cli"
     }
   },
   "lint-staged": {
