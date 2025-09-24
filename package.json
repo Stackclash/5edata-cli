@@ -57,7 +57,7 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
-    "@types/chai": "^4",
+    "@types/chai": "^5",
     "@types/mocha": "^10",
     "@types/node": "^24",
     "chai": "^6",
