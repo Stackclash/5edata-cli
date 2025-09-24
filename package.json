@@ -1,6 +1,6 @@
 {
   "name": "@stackclash/5edata-cli",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "author": "Richard Cox <cox.richard200@gmail.com>",
   "license": "MIT",
