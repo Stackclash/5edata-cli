@@ -7,16 +7,8 @@
   "tabs": false,
   "endOfLine": "auto",
   "importOrder": [
-    "^@nestjs/common$",
-    "^@nestjs(.*)$",
-    "^@prisma(.*)$",
     "<THIRD_PARTY_MODULES>",
     "",
-    "strategy$",
-    "guard$",
-    "module$",
-    "controller$",
-    "service$",
     "^[..]",
     "^[.]"
   ],
