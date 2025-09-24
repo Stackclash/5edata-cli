@@ -5,8 +5,7 @@
   },
   "references": [
     {
-      "path": "..",
-      "composite": true
+      "path": ".."
     }
   ]
 }
