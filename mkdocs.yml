@@ -1,6 +1,6 @@
-site_name: 5e Data CLI
-site_url: https://stackclash.github.io/5e-data-cli
-repo_url: https://github.com/Stackclash/5e-data-cli
+site_name: TTRPG Data Forge
+site_url: https://stackclash.github.io/ttrpg-data-forge
+repo_url: https://github.com/Stackclash/ttrpg-data-forge
 edit_uri: blob/main/docs/
 remote_branch: gh-pages
 docs_dir: docs
