@@ -50,6 +50,7 @@
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-version": "^2.2.33",
+    "axios": "^1.12.2",
     "handlebars": "^4.7.8",
     "octokit": "^5.0.3"
   },
@@ -86,8 +87,8 @@
     ],
     "topicSeparator": " ",
     "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
+      "5etools": {
+        "description": "Interact with 5etools JSON"
       }
     },
     "macos": {
