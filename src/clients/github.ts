@@ -1,7 +1,5 @@
 import { Octokit } from 'octokit'
 
-const octokit = new Octokit()
-
 interface OctokitResponse {
   download_url: string
   name: string
@@ -10,7 +8,7 @@ interface OctokitResponse {
   url: string
 }
 
-class GitHubFile {
+export class GitHubFile {
   content: string
   filename: string
   path: string
@@ -33,6 +31,12 @@ class GitHubFile {
 }
 
 export class GitHubClient {
+  private octokit: Octokit
+
+  constructor(octokit?: Octokit) {
+    this.octokit = octokit || new Octokit()
+  }
+
   async fetchGitHubDirectoryContent(owner: string, repo: string, path?: string, ref?: string): Promise<GitHubFile[]> {
     const result: GitHubFile[] = []
     const directoryInfo = await this.fetchGitHubDirectoryInfo(owner, repo, path, ref)
@@ -82,7 +86,7 @@ export class GitHubClient {
     path?: string,
     ref?: string,
   ): Promise<OctokitResponse | OctokitResponse[]> {
-    const response = await octokit.rest.repos.getContent({
+    const response = await this.octokit.rest.repos.getContent({
       owner,
       path: path || '',
       ref: ref || 'refs/heads/main',
@@ -92,7 +96,7 @@ export class GitHubClient {
   }
 
   async fetchGitHubFileContent(url: string): Promise<string> {
-    const response = await octokit.request(`GET ${url}`, {
+    const response = await this.octokit.request(`GET ${url}`, {
       headers: {
         Accept: 'application/vnd.github.raw+json',
         'X-GitHub-Api-Version': '2022-11-28',
