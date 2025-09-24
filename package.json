@@ -1,8 +1,8 @@
 {
-  "name": "5edata-cli",
-  "type": "module",
+  "name": "@stackclash/5edata-cli",
   "version": "0.0.0",
-  "author": "Richard Cox",
+  "type": "module",
+  "author": "Richard Cox <cox.richard200@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/Stackclash/5edata-cli/issues"
   },
-  "homepage": "https://github.com/Stackclash/5edata-cli#readme",
+  "homepage": "https://stackclash.github.io/5edata-cli/",
   "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
   "keywords": [
     "ttrpg",
@@ -20,27 +20,31 @@
     "oclif"
   ],
   "main": "dist/index.js",
-  "engines": {
-    "node": ">=18.0.0"
+  "types": "dist/index.d.ts",
+  "bin": {
+    "5edata": "bin/run.js"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
   },
   "files": [
     "./bin",
     "./dist",
     "./oclif.manifest.json"
   ],
-  "bin": {
-    "5edata-cli": "./bin/run.js"
+  "engines": {
+    "node": ">=18.0.0"
   },
-  "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "husky",
     "build": "shx rm -rf dist && tsc -b",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "postpack": "shx rm -f oclif.manifest.json",
-    "prepack": "oclif manifest",
+    "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "readme": "oclif readme --multi --output-dir=docs/commands"
+    "docs": "oclif readme --multi --output-dir=docs/commands"
   },
   "dependencies": {
     "@oclif/core": "^4",
@@ -68,7 +72,7 @@
     "typescript": "^5"
   },
   "oclif": {
-    "bin": "5edata-cli",
+    "bin": "5edata",
     "dirname": "5edata-cli",
     "commands": "./dist/commands",
     "plugins": [
@@ -80,6 +84,9 @@
       "hello": {
         "description": "Say hello to the world and others"
       }
+    },
+    "macos": {
+      "identifier": "com.stackclash.5edata-cli"
     }
   },
   "lint-staged": {

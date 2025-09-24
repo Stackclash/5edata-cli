@@ -26,7 +26,8 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  release-pr-readme-file:
+  release-pr-docs-update:
+    name: Update Documentation in Release PR
     runs-on: ubuntu-latest
     if: ${{ needs.release-please.outputs.pr }}
     needs: release-please
@@ -36,32 +37,99 @@ jobs:
         run: |
           branch=$(echo '${{ needs.release-please.outputs.pr }}' | jq -r '.headBranchName')
           echo "branch_name=$branch" >> $GITHUB_OUTPUT
+
       - uses: actions/checkout@v5
         with:
           ref: ${{ steps.branch.outputs.branch_name }}
           fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: latest
+          cache: 'npm'
+
       - run: npm ci
-      - name: Update README
+      - name: Update Documentation
         run: |
-          npm run readme
+          npm run docs
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           commit_message: Updating Documentation
           commit_options: '--no-verify'
 
   release:
     name: Build and Upload Release Assets
-    runs-on: ubuntu-latest
     if: ${{ needs.release-please.outputs.release_created }}
     needs: release-please
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
     steps:
-      - run: |
-          echo "Tag name: ${{ needs.release-please.outputs.tag_name }}"
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Install oclif globally
+        run: npm i -g oclif
+
+      - name: Get CLI name
+        id: cli-name
+        run: |
+          cli_name=$(jq -r '.bin | keys[0]' package.json)
+          echo "cli_name=$cli_name" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install -y nsis p7zip-full apt-utils
+
+      - name: Pack for Windows and Debian
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          oclif pack win
+          oclif pack deb
+
+      - name: Pack for macOS
+        if: matrix.os == 'macos-latest'
+        run: oclif pack macos
+
+      - name: Zip Windows artifacts
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-windows-arm64.zip dist/win32/*arm64.exe
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-windows-x64.zip dist/win32/*x64.exe
+
+      - name: Zip Debian artifacts
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-linux-arm64.zip dist/deb/*arm64.deb
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-linux-x64.zip dist/deb/*amd64.deb
+
+      - name: Zip macOS artifacts
+        if: matrix.os == 'macos-latest'
+        run: |
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-macos-arm64.zip dist/macos/*arm64.pkg
+          zip ${{ steps.cli-name.outputs.cli_name }}-${{ needs.release-please.outputs.tag_name }}-macos-x64.zip dist/macos/*x64.pkg
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          files: |
+            *.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     name: Publish to npm
@@ -69,14 +137,23 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     needs: release-please
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: latest
+          registry-url: "https://registry.npmjs.org"
+          cache: 'npm'
+
       - run: npm ci
+
       - run: npm run build
+
       - run: npm run prepack
-      - uses: JS-DevTools/npm-publish@19c28f1ef146469e409470805ea4279d47c3d35c
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - run: npm run postpack
