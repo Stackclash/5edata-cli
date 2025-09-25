@@ -1,5 +1,5 @@
 {
-  "name": "@stackclash/ttrpg-data-forge",
+  "name": "ttrpg-data-forge",
   "version": "0.0.0",
   "type": "module",
   "author": "Richard Cox <cox.richard200@gmail.com>",
@@ -49,6 +49,7 @@
   "dependencies": {
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
+    "@oclif/plugin-plugins": "^5.4.47",
     "@oclif/plugin-version": "^2.2.33",
     "handlebars": "^4.7.8"
   },
@@ -73,12 +74,17 @@
   },
   "oclif": {
     "bin": "forge",
-    "binAliases": ["ttrpg-data-forge"],
+    "scope": "ttrpg-data-forge",
+    "pluginPrefix": "forge-plugin",
+    "binAliases": [
+      "ttrpg-data-forge"
+    ],
     "dirname": "ttrpg-data-forge",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-version"
+      "@oclif/plugin-version",
+      "@oclif/plugin-plugins"
     ],
     "topicSeparator": " ",
     "topics": {
