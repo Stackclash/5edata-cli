@@ -1,60 +1,41 @@
-import { Command, Flags } from '@oclif/core'
+import { RunPluginCommand } from '../common/run-plugin-command.js'
 
-export default class Collect extends Command {
+export default class Collect extends RunPluginCommand<typeof Collect> {
   static override description = 'collects data for all source plugins'
   static override examples = ['<%= config.bin %> <%= command.id %> -s 5etools,dndbeyond']
-  static override flags = {
-    sources: Flags.string({
-      char: 's',
-      description: 'comma separated list of sources to collect from (uses source plugin name)',
-      required: false,
-    }),
-  }
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(Collect)
 
-    const pluginSourceMap = new Map<string, string>()
-    const availableSourcePlugins = [...this.config.plugins.keys()].filter((p) => p.includes('forge-plugin'))
+    const availableSourcePluginNames = this.getAvailableSourcePluginNames()
 
-    for (const plugin of availableSourcePlugins) {
-      const match = plugin.match(/.*forge-plugin-(.*)/)
-      if (match) {
-        pluginSourceMap.set(match[1], plugin)
-      }
-    }
-
-    if (pluginSourceMap.size === 0) {
+    if (availableSourcePluginNames.length === 0) {
       this.error('No source plugins found. Please install source plugins to collect data from.')
     } else {
-      this.log(`Found source plugins: ${[...pluginSourceMap.values()].join(', ')}`)
+      this.log(`Found source plugins: ${availableSourcePluginNames.join(', ')}`)
     }
 
     let sourcesToUse: string[] = []
     if (flags.sources) {
       sourcesToUse = flags.sources.split(',').map((s: string) => s.trim().toLowerCase())
-      if (sourcesToUse.length === 0) {
-        this.error('No valid sources specified. Please provide at least one source.')
-      }
 
-      const invalidSources = sourcesToUse.filter((s) => !pluginSourceMap.has(s))
+      const invalidSources = sourcesToUse.filter((s) => !this.pluginExistsForSourceName(s))
       if (invalidSources.length > 0) {
         this.error(`Invalid sources specified: ${invalidSources.join(', ')}`)
       }
     } else {
-      sourcesToUse = [...pluginSourceMap.keys()]
+      sourcesToUse = this.getAvailableSourceNames()
     }
 
     this.log(`Sources to collect from: ${sourcesToUse.join(', ')}`)
 
     const collectPromises = []
     for (const source of sourcesToUse) {
-      const pluginName = pluginSourceMap.get(source)
+      const pluginName = this.getSourcePluginNameBySource(source)
       if (pluginName) {
         this.log(`Collecting data from source: ${source} using plugin: ${pluginName}`)
         try {
-          const plugin = this.config.plugins.get(pluginName)
-          const pluginCollectCommandId = plugin?.commandIDs.find((cmd) => cmd === 'collect' || cmd.endsWith(':collect'))
+          const pluginCollectCommandId = this.getPluginCommandId(pluginName, 'collect')
           if (pluginCollectCommandId) {
             collectPromises.push(this.config.runCommand(pluginCollectCommandId))
           } else {
