@@ -15,9 +15,7 @@ export default class Collect extends Command {
     const { flags } = await this.parse(Collect)
 
     const pluginSourceMap = new Map<string, string>()
-    const availableSourcePlugins = [...this.config.plugins.keys()].filter(
-      (p) => p.includes('ttrpg-data-forge') || p.includes('forge-plugin'),
-    )
+    const availableSourcePlugins = [...this.config.plugins.keys()].filter((p) => p.includes('forge-plugin'))
 
     for (const plugin of availableSourcePlugins) {
       const match = plugin.match(/.*forge-plugin-(.*)/)

@@ -61,14 +61,13 @@ interface MockedCommand<T extends Command> {
 export function createMockedCommand<T extends Command>(
   CommandClass: new (args: string[], config: Config) => T,
   args: string[] = [],
-  config = undefined as never,
   mockConfig = defaultMockCommandConfig,
 ): MockedCommand<T> {
   const mockLog = stub()
   const mockError = stub()
   const mockWarn = stub()
 
-  const command = new CommandClass(args, config)
+  const command = new CommandClass(args, undefined as never)
 
   Object.defineProperties(command, {
     config: {
