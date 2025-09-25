@@ -1,17 +1,17 @@
 {
-  "name": "5edata-cli",
-  "type": "module",
+  "name": "@stackclash/ttrpg-data-forge",
   "version": "0.0.0",
-  "author": "Richard Cox",
+  "type": "module",
+  "author": "Richard Cox <cox.richard200@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Stackclash/5edata-cli.git"
+    "url": "git+https://github.com/Stackclash/ttrpg-data-forge.git"
   },
   "bugs": {
-    "url": "https://github.com/Stackclash/5edata-cli/issues"
+    "url": "https://github.com/Stackclash/ttrpg-data-forge/issues"
   },
-  "homepage": "https://github.com/Stackclash/5edata-cli#readme",
+  "homepage": "https://stackclash.github.io/ttrpg-data-forge/",
   "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
   "keywords": [
     "ttrpg",
@@ -20,18 +20,22 @@
     "oclif"
   ],
   "main": "dist/index.js",
-  "engines": {
-    "node": ">=18.0.0"
+  "types": "dist/index.d.ts",
+  "bin": {
+    "forge": "bin/run.js"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
   },
   "files": [
     "./bin",
     "./dist",
     "./oclif.manifest.json"
   ],
-  "bin": {
-    "5edata-cli": "./bin/run.js"
+  "engines": {
+    "node": ">=18.0.0"
   },
-  "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "husky",
     "build": "shx rm -rf dist && tsc -b",
@@ -40,7 +44,7 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "readme": "oclif readme --multi --output-dir=docs/commands"
+    "docs": "oclif readme --multi --output-dir=docs/commands"
   },
   "dependencies": {
     "@oclif/core": "^4",
@@ -53,23 +57,24 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
-    "@types/chai": "^4",
+    "@types/chai": "^5",
     "@types/mocha": "^10",
-    "@types/node": "^18",
-    "chai": "^4",
+    "@types/node": "^24",
+    "chai": "^6",
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
     "husky": "^9.1.7",
-    "mocha": "^10",
+    "mocha": "^11",
     "oclif": "^4",
-    "shx": "^0.3.3",
+    "shx": "^0.4.0",
     "ts-node": "^10",
     "typescript": "^5"
   },
   "oclif": {
-    "bin": "5edata-cli",
-    "dirname": "5edata-cli",
+    "bin": "forge",
+    "binAliases": ["ttrpg-data-forge"],
+    "dirname": "ttrpg-data-forge",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
@@ -80,6 +85,9 @@
       "hello": {
         "description": "Say hello to the world and others"
       }
+    },
+    "macos": {
+      "identifier": "com.stackclash.ttrpg-data-forge"
     }
   },
   "lint-staged": {

@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   conventional-commits:
@@ -17,6 +18,54 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR title follows Conventional Commits
-        uses: amannn/action-semantic-pull-request@v5
+        uses: amannn/action-semantic-pull-request@v6
+        id: conventional-commits
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            test
+            ci
+            refactor
+            chore
+
+      - name: Map commit type to label
+        if: steps.conventional-commits.outputs.type != ''
+        id: map-label
+        run: |
+          case "${{ steps.conventional-commits.outputs.type }}" in
+            "feat")
+              echo "label=feature" >> $GITHUB_OUTPUT
+              ;;
+            "fix")
+              echo "label=bugfix" >> $GITHUB_OUTPUT
+              ;;
+            "docs")
+              echo "label=documentation" >> $GITHUB_OUTPUT
+              ;;
+            "test")
+              echo "label=testing" >> $GITHUB_OUTPUT
+              ;;
+            "ci")
+              echo "label=ci-cd" >> $GITHUB_OUTPUT
+              ;;
+            "refactor")
+              echo "label=refactoring" >> $GITHUB_OUTPUT
+              ;;
+            "chore")
+              echo "label=maintenance" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "label=${{ steps.conventional-commits.outputs.type }}" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      - name: Add label to PR
+        if: steps.map-label.outputs.label != ''
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ steps.map-label.outputs.label }}
