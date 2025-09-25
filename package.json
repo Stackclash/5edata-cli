@@ -6,17 +6,17 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Stackclash/ttrpg-data-forge.git"
+    "url": "git+https://github.com/TTRPG-Data-Forge/core.git"
   },
   "bugs": {
-    "url": "https://github.com/Stackclash/ttrpg-data-forge/issues"
+    "url": "https://github.com/TTRPG-Data-Forge/core/issues"
   },
-  "homepage": "https://stackclash.github.io/ttrpg-data-forge/",
+  "homepage": "https://ttrpg-data-forge.github.io/core/",
   "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
   "keywords": [
     "ttrpg",
-    "5etools",
-    "markdown",
+    "ttrpg-data-forge",
+    "cli",
     "oclif"
   ],
   "main": "dist/index.js",
@@ -51,8 +51,7 @@
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5.4.47",
-    "@oclif/plugin-version": "^2.2.33",
-    "handlebars": "^4.7.8"
+    "@oclif/plugin-version": "^2.2.33"
   },
   "devDependencies": {
     "@eslint/compat": "^1",
@@ -94,6 +93,9 @@
     "topics": {
       "collect": {
         "description": "collects data for all source plugins"
+      },
+      "generate": {
+        "description": "generates output from collected data"
       }
     },
     "macos": {
