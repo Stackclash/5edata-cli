@@ -1,18 +1,18 @@
-import { Args, Command } from '@oclif/core'
+import { Command, Flags } from '@oclif/core'
 
 export default class Collect extends Command {
-  static override args = {
-    sources: Args.string({
+  static override description = 'collects data for all source plugins'
+  static override examples = ['<%= config.bin %> <%= command.id %> -s 5etools,dndbeyond']
+  static override flags = {
+    sources: Flags.string({
       char: 's',
       description: 'comma separated list of sources to collect from (uses source plugin name)',
       required: false,
     }),
   }
-  static override description = 'collects data for all source plugins'
-  static override examples = ['<%= config.bin %> <%= command.id %> -s 5etools,dndbeyond']
 
   public async run(): Promise<void> {
-    const { args } = await this.parse(Collect)
+    const { flags } = await this.parse(Collect)
 
     const pluginSourceMap = new Map<string, string>()
     const availableSourcePlugins = [...this.config.plugins.keys()].filter(
@@ -26,9 +26,19 @@ export default class Collect extends Command {
       }
     }
 
+    if (pluginSourceMap.size === 0) {
+      this.error('No source plugins found. Please install source plugins to collect data from.')
+    } else {
+      this.log(`Found source plugins: ${[...pluginSourceMap.values()].join(', ')}`)
+    }
+
     let sourcesToUse: string[] = []
-    if (args.sources) {
-      sourcesToUse = args.sources.split(',').map((s) => s.trim().toLowerCase())
+    if (flags.sources) {
+      sourcesToUse = flags.sources.split(',').map((s: string) => s.trim().toLowerCase())
+      if (sourcesToUse.length === 0) {
+        this.error('No valid sources specified. Please provide at least one source.')
+      }
+
       const invalidSources = sourcesToUse.filter((s) => !pluginSourceMap.has(s))
       if (invalidSources.length > 0) {
         this.error(`Invalid sources specified: ${invalidSources.join(', ')}`)
@@ -36,6 +46,8 @@ export default class Collect extends Command {
     } else {
       sourcesToUse = [...pluginSourceMap.keys()]
     }
+
+    this.log(`Sources to collect from: ${sourcesToUse.join(', ')}`)
 
     const collectPromises = []
     for (const source of sourcesToUse) {
@@ -57,10 +69,6 @@ export default class Collect extends Command {
     }
 
     await Promise.all(collectPromises)
-    if (collectPromises.length === 0) {
-      this.log('No sources to collect from.')
-    } else {
-      this.log('All data collection tasks completed.')
-    }
+    this.log('All data collection tasks completed.')
   }
 }

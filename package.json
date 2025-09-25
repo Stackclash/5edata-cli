@@ -39,6 +39,7 @@
   "scripts": {
     "prepare": "husky",
     "build": "shx rm -rf dist && tsc -b",
+    "dev": "npm run build && node bin/dev.js",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "postpack": "shx rm -f oclif.manifest.json",
@@ -58,10 +59,11 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
-    "@types/chai": "^5",
+    "@types/chai": "^5.2.2",
     "@types/mocha": "^10",
     "@types/node": "^24",
-    "chai": "^6",
+    "@types/sinon": "^17.0.4",
+    "chai": "^5.0.0",
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
@@ -71,7 +73,8 @@
     "oclif": "^4",
     "shx": "^0.4.0",
     "ts-node": "^10",
-    "typescript": "^5"
+    "typescript": "^5",
+    "sinon": "^21.0.0"
   },
   "oclif": {
     "bin": "forge",
@@ -89,8 +92,8 @@
     ],
     "topicSeparator": " ",
     "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
+      "collect": {
+        "description": "collects data for all source plugins"
       }
     },
     "macos": {
