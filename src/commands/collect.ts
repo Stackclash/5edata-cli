@@ -1,4 +1,4 @@
-import {Args, Command} from '@oclif/core'
+import { Args, Command } from '@oclif/core'
 
 export default class Collect extends Command {
   static override args = {
@@ -9,15 +9,15 @@ export default class Collect extends Command {
     }),
   }
   static override description = 'collects data for all source plugins'
-  static override examples = [
-    '<%= config.bin %> <%= command.id %> -s 5etools,dndbeyond',
-  ]
+  static override examples = ['<%= config.bin %> <%= command.id %> -s 5etools,dndbeyond']
 
   public async run(): Promise<void> {
-    const {args} = await this.parse(Collect)
+    const { args } = await this.parse(Collect)
 
     const pluginSourceMap = new Map<string, string>()
-    const availableSourcePlugins = [...this.config.plugins.keys()].filter(p => p.includes('ttrpg-data-forge') || p.includes('forge-plugin'))
+    const availableSourcePlugins = [...this.config.plugins.keys()].filter(
+      (p) => p.includes('ttrpg-data-forge') || p.includes('forge-plugin'),
+    )
 
     for (const plugin of availableSourcePlugins) {
       const match = plugin.match(/.*forge-plugin-(.*)/)
@@ -28,8 +28,8 @@ export default class Collect extends Command {
 
     let sourcesToUse: string[] = []
     if (args.sources) {
-      sourcesToUse = args.sources.split(',').map(s => s.trim().toLowerCase())
-      const invalidSources = sourcesToUse.filter(s => !pluginSourceMap.has(s))
+      sourcesToUse = args.sources.split(',').map((s) => s.trim().toLowerCase())
+      const invalidSources = sourcesToUse.filter((s) => !pluginSourceMap.has(s))
       if (invalidSources.length > 0) {
         this.error(`Invalid sources specified: ${invalidSources.join(', ')}`)
       }
@@ -44,7 +44,7 @@ export default class Collect extends Command {
         this.log(`Collecting data from source: ${source} using plugin: ${pluginName}`)
         try {
           const plugin = this.config.plugins.get(pluginName)
-          const pluginCollectCommandId = plugin?.commandIDs.find(cmd => cmd === 'collect' || cmd.endsWith(':collect'))
+          const pluginCollectCommandId = plugin?.commandIDs.find((cmd) => cmd === 'collect' || cmd.endsWith(':collect'))
           if (pluginCollectCommandId) {
             collectPromises.push(this.config.runCommand(pluginCollectCommandId))
           } else {
