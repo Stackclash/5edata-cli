@@ -1,22 +1,22 @@
 {
-  "name": "@stackclash/ttrpg-data-forge",
+  "name": "ttrpg-data-forge",
   "version": "0.0.0",
   "type": "module",
   "author": "Richard Cox <cox.richard200@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Stackclash/ttrpg-data-forge.git"
+    "url": "git+https://github.com/TTRPG-Data-Forge/core.git"
   },
   "bugs": {
-    "url": "https://github.com/Stackclash/ttrpg-data-forge/issues"
+    "url": "https://github.com/TTRPG-Data-Forge/core/issues"
   },
-  "homepage": "https://stackclash.github.io/ttrpg-data-forge/",
+  "homepage": "https://ttrpg-data-forge.github.io/core/",
   "description": "NodeJS cli tool to convert 5etools JSON to markdown files",
   "keywords": [
     "ttrpg",
-    "5etools",
-    "markdown",
+    "ttrpg-data-forge",
+    "cli",
     "oclif"
   ],
   "main": "dist/index.js",
@@ -39,51 +39,65 @@
   "scripts": {
     "prepare": "husky",
     "build": "shx rm -rf dist && tsc -b",
+    "dev": "npm run build && node bin/dev.js",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "oclif manifest && oclif readme",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "mocha \"test/**/*.test.ts\"",
     "docs": "oclif readme --multi --output-dir=docs/commands"
   },
   "dependencies": {
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
-    "@oclif/plugin-version": "^2.2.33",
-    "handlebars": "^4.7.8"
+    "@oclif/plugin-plugins": "^5.4.47",
+    "@oclif/plugin-version": "^2.2.33"
   },
   "devDependencies": {
     "@eslint/compat": "^1",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
-    "@types/chai": "^5",
+    "@types/chai": "^5.2.2",
+    "@types/chai-as-promised": "^8.0.2",
     "@types/mocha": "^10",
     "@types/node": "^24",
-    "chai": "^6",
+    "@types/sinon": "^17.0.4",
+    "chai": "^5.0.0",
+    "chai-as-promised": "^8.0.2",
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
+    "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
     "mocha": "^11",
     "oclif": "^4",
     "shx": "^0.4.0",
+    "sinon": "^21.0.0",
     "ts-node": "^10",
     "typescript": "^5"
   },
   "oclif": {
     "bin": "forge",
-    "binAliases": ["ttrpg-data-forge"],
+    "scope": "ttrpg-data-forge",
+    "pluginPrefix": "forge-plugin",
+    "binAliases": [
+      "ttrpg-data-forge"
+    ],
     "dirname": "ttrpg-data-forge",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-version"
+      "@oclif/plugin-version",
+      "@oclif/plugin-plugins"
     ],
     "topicSeparator": " ",
     "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
+      "collect": {
+        "description": "collects data for all source plugins"
+      },
+      "generate": {
+        "description": "generates output from collected data"
       }
     },
     "macos": {

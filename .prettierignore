@@ -1,0 +1,24 @@
+# Build outputs
+dist/
+coverage/
+
+# Dependencies
+node_modules/
+
+# Generated files
+oclif.manifest.json
+tsconfig.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Documentation (generated)
+docs/commands/
+
+# Git
+.git/
+
+# OS
+.DS_Store
+Thumbs.db
