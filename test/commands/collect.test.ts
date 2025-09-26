@@ -34,22 +34,6 @@ describe('Collect', () => {
       expect(foundSourcesLogCall?.firstArg).to.not.include('dndbeyond')
     })
 
-    // it('should error with empty sources', async () => {
-    //   const { command, mocks } = createMockedCommand(Collect, ['-s', ''])
-    //   let errorLogCall: SinonSpyCall | undefined
-
-    //   try {
-    //     await command.run()
-    //   } catch {
-    //     // error expected
-    //     const errorLogCalls = mocks.error.getCalls()
-    //     errorLogCall = errorLogCalls.find((call: SinonSpyCall) => call.firstArg.includes('No valid sources specified'))
-    //     console.log(errorLogCall)
-    //   }
-
-    //   expect(errorLogCall).to.not.be.undefined
-    // })
-
     it('should handle case sensitivity', async () => {
       const { command, mocks } = createMockedCommand(Collect, ['-s', '5ETOOLS,DndBeyond'])
 
@@ -63,20 +47,21 @@ describe('Collect', () => {
       expect(foundSourcesLogCall?.firstArg).to.include('dndbeyond')
     })
 
-    // it('should error with invalid source', async () => {
-    //   const { command, mocks } = createMockedCommand(Collect, ['-s', 'invalidsource'])
-    //   let errorLogCall: SinonSpyCall | undefined
+    it('should error with invalid source', async () => {
+      const { command, mocks } = createMockedCommand(Collect, ['-s', 'invalidsource'])
+      let errorLogCall: SinonSpyCall | undefined
 
-    //   try {
-    //     await command.run()
-    //   } catch {
-    //     // error expected
-    //     const errorLogCalls = mocks.error.getCalls()
-    //     errorLogCall = errorLogCalls.find((call: SinonSpyCall) => call.firstArg.includes('Invalid sources specified'))
-    //   }
-
-    //   expect(errorLogCall).to.not.be.undefined
-    // })
+      await command
+        .run()
+        .then(() => {
+          expect(true).to.be.false
+        })
+        .catch(() => {
+          const errorLogCalls = mocks.error.getCalls()
+          errorLogCall = errorLogCalls.find((call: SinonSpyCall) => call.firstArg.includes('Invalid sources specified'))
+          expect(errorLogCall).to.not.be.undefined
+        })
+    })
   })
 
   describe('plugin discovery', () => {
@@ -101,7 +86,7 @@ describe('Collect', () => {
       expect(foundPluginsLogCall?.firstArg).to.not.include('some-other-plugin')
     })
 
-    it.only('should error when no source plugins are present', async (done) => {
+    it('should error when no source plugins are present', async () => {
       const mockConfig = createMockConfig(
         new Map<string, { commandIDs: string[] }>([
           ['another-plugin', { commandIDs: ['data:collect', 'dndbeyond'] }],
@@ -110,12 +95,17 @@ describe('Collect', () => {
       )
       const { command, mocks } = createMockedCommand(Collect, [], mockConfig)
 
-      expect(command.run()).to.eventually.throw()
-      const errorLogCall = mocks.error
-        .getCalls()
-        .find((call: SinonSpyCall) => call.firstArg.includes('No source plugins found'))
-      expect(errorLogCall).to.not.be.undefined
-      done()
+      await command
+        .run()
+        .then(() => {
+          expect(true).to.be.false
+        })
+        .catch(() => {
+          const errorLogCall = mocks.error
+            .getCalls()
+            .find((call: SinonSpyCall) => call.firstArg.includes('No source plugins found'))
+          expect(errorLogCall).to.not.be.undefined
+        })
     })
   })
 
