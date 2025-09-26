@@ -1,5 +1,7 @@
-import { expect } from 'chai'
+import { expect, use } from 'chai'
+import chaiAsPromised from 'chai-as-promised'
 import { type SinonSpyCall } from 'sinon'
+use(chaiAsPromised)
 
 import Collect from '../../src/commands/collect.js'
 import { createMockConfig, createMockedCommand } from '../utils/mock-command.js'
@@ -99,26 +101,22 @@ describe('Collect', () => {
       expect(foundPluginsLogCall?.firstArg).to.not.include('some-other-plugin')
     })
 
-    // it('should error when no source plugins are present', async () => {
-    //   const mockConfig = createMockConfig(
-    //     new Map<string, { commandIDs: string[] }>([
-    //       ['another-plugin', { commandIDs: ['data:collect', 'dndbeyond'] }],
-    //       ['some-other-plugin', { commandIDs: ['other:command'] }],
-    //     ]),
-    //   )
-    //   const { command, mocks } = createMockedCommand(Collect, [], mockConfig)
-    //   let errorLogCall: SinonSpyCall | undefined
+    it.only('should error when no source plugins are present', async (done) => {
+      const mockConfig = createMockConfig(
+        new Map<string, { commandIDs: string[] }>([
+          ['another-plugin', { commandIDs: ['data:collect', 'dndbeyond'] }],
+          ['some-other-plugin', { commandIDs: ['other:command'] }],
+        ]),
+      )
+      const { command, mocks } = createMockedCommand(Collect, [], mockConfig)
 
-    //   try {
-    //     await command.run()
-    //   } catch {
-    //     // error expected
-    //     const errorLogCalls = mocks.error.getCalls()
-    //     errorLogCall = errorLogCalls.find((call: SinonSpyCall) => call.firstArg.includes('No source plugins found'))
-    //   }
-
-    //   expect(errorLogCall).to.not.be.undefined
-    // })
+      expect(command.run()).to.eventually.throw()
+      const errorLogCall = mocks.error
+        .getCalls()
+        .find((call: SinonSpyCall) => call.firstArg.includes('No source plugins found'))
+      expect(errorLogCall).to.not.be.undefined
+      done()
+    })
   })
 
   describe('source name extraction', () => {
