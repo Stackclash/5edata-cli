@@ -1,6 +1,6 @@
 {
   "name": "@stackclash/ttrpg-data-forge",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "author": "Richard Cox <cox.richard200@gmail.com>",
   "license": "MIT",
@@ -73,7 +73,9 @@
   },
   "oclif": {
     "bin": "forge",
-    "binAliases": ["ttrpg-data-forge"],
+    "binAliases": [
+      "ttrpg-data-forge"
+    ],
     "dirname": "ttrpg-data-forge",
     "commands": "./dist/commands",
     "plugins": [
